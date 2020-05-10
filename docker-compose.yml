@@ -1,0 +1,40 @@
+version: "3"
+
+networks:
+    monitoramento:
+        driver: bridge
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+services:
+    prometheus:
+        image: prom/prometheus:v2.16.0
+        volumes:
+            - ./prometheus/:/etc/prometheus/
+            - prometheus_data:/prometheus
+        command:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+        ports:
+            - 9090:9090
+        networks:
+            - monitoramento
+
+    grafana:
+        image: grafana/grafana:6.6.2
+        ports:
+            - 3000:3000
+        networks:
+            - monitoramento
+            
+    monitorvideoconf:
+        build:
+            dockerfile: ./Dockerfile
+            context: .
+        image: alexandrehst/monitoramento
+        ports: 
+            - 8001:8001
+        networks: 
+            - monitoramento
