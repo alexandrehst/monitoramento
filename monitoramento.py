@@ -3,6 +3,7 @@ from requests.auth import HTTPBasicAuth
 import time
 import random
 from prometheus_client import start_http_server, Gauge, CollectorRegistry
+from config import Configuracao
 
 # Resposta da API. O número de servidores é variável
 #[
@@ -12,10 +13,7 @@ from prometheus_client import start_http_server, Gauge, CollectorRegistry
 #    {"target":"Available - SRV02","sessions":171,"recordings":5}
 #]
 
-#Parâmetros da API
-url = "https://api.videoconferencia.soluti.com.br/monitor?q=global"
-
-tempo_de_atualizacao = 5 #tempo em segundos
+# url = "https://api.videoconferencia.soluti.com.br/monitor?q=global"
 
 #Gauges para o exporter
 SESSOES_EM_USO = Gauge('MONITOR_sessoes_em_uso', 'Total de sessões em uso')
@@ -23,16 +21,9 @@ GRAVACOES_EM_USO  = Gauge('MONITOR_gravacoes_em_uso', 'Total de slots de gravaç
 SESSOES_DISPONIVEIS = Gauge('MONITOR_sessoes_disponiveis', 'Total de slots disponíveis')
 GRAVACOES_DISPONIVEIS  = Gauge('MONITOR_gravacoes_disponiveis', 'Total de slots de gravação disponíveis')
 
-#Autenticação
-usuario = 'soluti'
-senha = 'Soluti@2020!'
+def coleta_dados(cfg):
 
-# Indica se irá ou não ligado o exporter. False quando em debug
-monitorar = True
-
-def coleta_dados():
-    
-    req = requests.get(url, auth = HTTPBasicAuth(usuario, senha))
+    req = requests.get(cfg.url, auth = HTTPBasicAuth(cfg.usuario, cfg.senha))
     data = req.json()
     
     indicadores = [0,0,0,0]
@@ -46,14 +37,14 @@ def coleta_dados():
         indicadores[2] += data[i + 1]['sessions']
         indicadores[3] += data[ i+ 1 ]['recordings']
 
-    exporta( *indicadores )
+    exporta( cfg, *indicadores )
 
-    time.sleep(tempo_de_atualizacao)
+    time.sleep(cfg.tempo_de_atualizacao)
 
 
-def exporta( sessao_em_uso, gravacao_em_uso, sessao_disponivel, gravacao_disponivel ):
+def exporta( cfg, sessao_em_uso, gravacao_em_uso, sessao_disponivel, gravacao_disponivel ):
 
-    if (monitorar):
+    if (cfg.monitorar):
         SESSOES_EM_USO.set(sessao_em_uso)
         GRAVACOES_EM_USO.set(gravacao_em_uso)
         SESSOES_DISPONIVEIS.set(sessao_disponivel)
@@ -63,13 +54,17 @@ def exporta( sessao_em_uso, gravacao_em_uso, sessao_disponivel, gravacao_disponi
         print( sessao_em_uso, gravacao_em_uso, sessao_disponivel, gravacao_disponivel)
     
 
-def liga_servidor():
-    if (monitorar):
-        start_http_server(8001)
+def liga_servidor(cfg):
+
+    if (cfg.monitorar):
+        start_http_server(8001)   
+
 
 if __name__ == '__main__':
     
-    liga_servidor()
+    cfg = Configuracao()
+    cfg.carrega_config()
+    liga_servidor(cfg)
 
     while True:
-       coleta_dados()
+       coleta_dados(cfg)

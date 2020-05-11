@@ -1,0 +1,12 @@
+#Parâmetros da API
+api:
+    url: https://api.videoconferencia.soluti.com.br/monitor?q=global
+
+atualizacao: 5 #tempo em segundos
+
+#Autenticação
+usuario: 'soluti'
+senha: 'Soluti@2020!'
+
+# Indica se irá ou não ligado o exporter. False quando em debug
+monitorar: True
