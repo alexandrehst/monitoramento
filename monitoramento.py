@@ -5,16 +5,6 @@ import random
 from prometheus_client import start_http_server, Gauge, CollectorRegistry
 from config import Configuracao
 
-# Resposta da API. O número de servidores é variável
-#[
-#    {"target":"In Usage  - SRV01","sessions":131,"recordings":5},
-#    {"target":"Available - SRV01","sessions":189,"recordings":7},
-#    {"target":"In Usage  - SRV02","sessions":149,"recordings":7},
-#    {"target":"Available - SRV02","sessions":171,"recordings":5}
-#]
-
-# url = "https://api.videoconferencia.soluti.com.br/monitor?q=global"
-
 #Gauges para o exporter
 SESSOES_EM_USO = Gauge('MONITOR_sessoes_em_uso', 'Total de sessões em uso')
 GRAVACOES_EM_USO  = Gauge('MONITOR_gravacoes_em_uso', 'Total de slots de gravação em uso')
