@@ -2,12 +2,12 @@ version: "3"
 
 networks:
     monitoramento:
-        driver: bridge
 
 volumes:
     prometheus_data: {}
     grafana_data: {}
-
+    app_data: {}
+    
 services:
     prometheus:
         image: prom/prometheus:v2.16.0
@@ -19,6 +19,14 @@ services:
             - "--storage.tsdb.path=/prometheus"
         ports:
             - 9090:9090
+        networks:
+            - monitoramento
+
+    promtail:
+        image: grafana/promtail:v1.3.0
+        volumes:
+            - app_data:/var/log
+        command: -config.file=/etc/promtail/docker-config.yaml
         networks:
             - monitoramento
 

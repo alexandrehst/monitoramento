@@ -5,8 +5,8 @@ api:
 atualizacao: 5 #tempo em segundos
 
 #Autenticação
-usuario: 'soluti'
-senha: 'Soluti@2020!'
+usuario: ''
+senha: ''
 
 # Indica se irá ou não ligado o exporter. False quando em debug
 monitorar: True
