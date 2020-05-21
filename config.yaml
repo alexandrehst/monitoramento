@@ -9,4 +9,4 @@ usuario: ''
 senha: ''
 
 # Indica se irá ou não ligado o exporter. False quando em debug
-monitorar: True
+monitorar: False

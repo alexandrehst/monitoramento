@@ -11,13 +11,13 @@ ENV PYTHONUNBUFFERED 1
 ADD requirements.txt .
 RUN python -m pip install -r requirements.txt
 
-WORKDIR /app
-ADD . /app
+WORKDIR /
+ADD . /
 
 EXPOSE 8001
 
 # Switching to a non-root user, please refer to https://aka.ms/vscode-docker-python-user-rights
-RUN useradd appuser && chown -R appuser /app
+RUN useradd appuser && chown -R appuser /
 USER appuser
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
